@@ -1,163 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>For You ❤️</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: linear-gradient(to bottom right, #ff9a9e, #fad0c4);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
 
-    .container {
-      position: relative;
-    }
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffdde1, #ee9ca7);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+  }
 
-    h1 {
-      font-size: 28px;
-      margin-bottom: 30px;
-    }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
 
-    button {
-      padding: 12px 24px;
-      font-size: 18px;
-      margin: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+  .container {
+    position: relative;
+    width: 90vw;
+    max-width: 500px;
+  }
 
-    #yesBtn {
-      background-color: #ff4d6d;
-      color: white;
-    }
+  h1 {
+    font-size: 26px;
+  }
 
-    #noBtn {
-      background-color: #444;
-      color: white;
-      position: absolute;
-    }
+  p {
+    font-size: 18px;
+  }
 
-    .hidden {
-      display: none;
-    }
+  button {
+    padding: 12px 24px;
+    font-size: 18px;
+    margin: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
 
-    .page {
-      width: 90vw;
-      max-width: 500px;
-    }
+  button:hover {
+    transform: scale(1.1);
+  }
 
-    img {
-      width: 100%;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
+  #yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+  }
 
-    .next-btn {
-      margin-top: 20px;
-      background-color: #ff4d6d;
-      color: white;
-    }
-  </style>
+  #noBtn {
+    background-color: #333;
+    color: white;
+    position: absolute;
+  }
+
+  img {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 15px;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .fade {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .fade.show {
+    opacity: 1;
+  }
+
+  .nav-buttons {
+    margin-top: 20px;
+  }
+
+</style>
 </head>
+
 <body>
 
-<div id="question" class="container">
+<!-- QUESTION SCREEN -->
+<div id="questionScreen" class="container fade show">
   <h1 id="questionText">Will you be my Valentine? ❤️</h1>
   <button id="yesBtn">Yes 💖</button>
-  <button id="noBtn">No</button>
+  <button id="noBtn">No 🙃</button>
 </div>
 
-<div id="journey" class="hidden">
-  <div class="page" id="pageContent">
-    <h1>Our First Date 🥰</h1>
-    <p>That day at 7:30 PM... when everything started.</p>
-    <img src="your-first-photo.jpg">
-    <button class="next-btn" onclick="nextPage()">Next →</button>
-  </div>
+<!-- JOURNEY SCREEN -->
+<div id="journeyScreen" class="container hidden fade">
+  <div id="pageContent"></div>
 </div>
 
 <script>
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
-  const questionText = document.getElementById("questionText");
 
-  let noClicks = 0;
-  let yesSize = 1;
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const questionText = document.getElementById("questionText");
 
-  const texts = [
-    "Are you sure? 😢",
-    "Think again...",
-    "Please? 🥺",
-    "You can't say no 😤"
-  ];
+let yesScale = 1;
+let noClicks = 0;
 
-  noBtn.addEventListener("click", () => {
-    noClicks++;
+const texts = [
+  "Are you sure? 🥺",
+  "Think again…",
+  "I’ll be very sad 😢",
+  "Please say yes ❤️",
+  "You can't escape destiny 😌"
+];
 
-    yesSize += 0.2;
-    yesBtn.style.transform = `scale(${yesSize})`;
+noBtn.addEventListener("click", () => {
+  noClicks++;
 
-    questionText.textContent = texts[Math.floor(Math.random() * texts.length)];
+  // Grow YES button
+  yesScale += 0.2;
+  yesBtn.style.transform = `scale(${yesScale})`;
 
-    // Move NO button randomly
-    noBtn.style.left = Math.random() * 200 - 100 + "px";
-    noBtn.style.top = Math.random() * 200 - 100 + "px";
-  });
+  // Change text randomly
+  questionText.textContent = texts[Math.floor(Math.random() * texts.length)];
 
-  yesBtn.addEventListener("click", () => {
-    const question = document.getElementById("question");
-    const journey = document.getElementById("journey");
-  
-    question.classList.add("fade");
-    
-    setTimeout(() => {
-      question.classList.add("hidden");
-      journey.classList.remove("hidden");
-      setTimeout(() => journey.classList.add("show"), 50);
-    }, 400);
-  });
+  // Move NO button randomly
+  const x = Math.random() * 250 - 125;
+  const y = Math.random() * 250 - 125;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+yesBtn.addEventListener("click", () => {
+  const questionScreen = document.getElementById("questionScreen");
+  const journeyScreen = document.getElementById("journeyScreen");
+
+  questionScreen.classList.remove("show");
+
+  setTimeout(() => {
+    questionScreen.classList.add("hidden");
+    journeyScreen.classList.remove("hidden");
+    setTimeout(() => journeyScreen.classList.add("show"), 50);
+    renderPage();
+  }, 500);
+});
 
 
-  const pages = [
-    {
-      title: "Our First Date 🥰",
-      text: "That day at 7:30 PM... when everything started.",
-      img: "photo1.jpg"
-    },
-    {
-      title: "Our Cute Moments 💕",
-      text: "All those laughs and stupid jokes.",
-      img: "photo2.jpg"
-    },
-    {
-      title: "And This Is Just The Beginning ❤️",
-      text: "More memories to come.",
-      img: "photo3.jpg"
-    }
-  ];
+// MEMORY PAGES (replace images with yours)
+const pages = [
+  {
+    title: "Our First Date 🥰",
+    text: "That day at 7:30 PM... when everything changed.",
+    img: "photo1.jpg"
+  },
+  {
+    title: "All Our Laughs 💕",
+    text: "Every silly joke, every smile, every moment.",
+    img: "photo2.jpg"
+  },
+  {
+    title: "This Is Just The Beginning ❤️",
+    text: "More memories. More love. More us.",
+    img: "photo3.jpg"
+  }
+];
 
-  let currentPage = 0;
+let currentPage = 0;
 
-  function nextPage() {
-    currentPage++;
-    if (currentPage >= pages.length) return;
+function renderPage() {
+  const content = pages[currentPage];
+  const container = document.getElementById("pageContent");
 
-    const content = pages[currentPage];
-    document.getElementById("pageContent").innerHTML = `
+  container.classList.remove("show");
+
+  setTimeout(() => {
+    container.innerHTML = `
       <h1>${content.title}</h1>
       <p>${content.text}</p>
       <img src="${content.img}">
-      <button class="next-btn" onclick="nextPage()">Next →</button>
+      <div class="nav-buttons">
+        ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
+        ${currentPage < pages.length - 1 ? `<button onclick="nextPage()">Next →</button>` : ""}
+      </div>
     `;
+    container.classList.add("show");
+  }, 300);
+}
+
+function nextPage() {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    renderPage();
   }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage();
+  }
+}
+
 </script>
 
 </body>
