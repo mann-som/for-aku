@@ -105,7 +105,7 @@
     yesSize += 0.2;
     yesBtn.style.transform = `scale(${yesSize})`;
 
-    questionText.textContent = texts[Math.min(noClicks - 1, texts.length - 1)];
+    questionText.textContent = texts[Math.floor(Math.random() * texts.length)];
 
     // Move NO button randomly
     noBtn.style.left = Math.random() * 200 - 100 + "px";
