@@ -113,9 +113,18 @@
   });
 
   yesBtn.addEventListener("click", () => {
-    document.getElementById("question").classList.add("hidden");
-    document.getElementById("journey").classList.remove("hidden");
+    const question = document.getElementById("question");
+    const journey = document.getElementById("journey");
+  
+    question.classList.add("fade");
+    
+    setTimeout(() => {
+      question.classList.add("hidden");
+      journey.classList.remove("hidden");
+      setTimeout(() => journey.classList.add("show"), 50);
+    }, 400);
   });
+
 
   const pages = [
     {
