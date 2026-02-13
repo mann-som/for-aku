@@ -205,33 +205,57 @@ const pages = [
 
 let currentPage = 0;
 
-function renderPage(direction = "right") {
+function renderPage(direction = 1) {
+
   const content = pages[currentPage];
   const container = document.getElementById("pageContent");
 
-  const exitClass = direction === "right" ? "left" : "";
-  container.classList.remove("show");
-  container.classList.add(exitClass);
+  // Create new slide
+  const slide = document.createElement("div");
+  slide.className = "slide";
 
-  setTimeout(() => {
+  slide.innerHTML = `
+      <h1>${content.title}</h1>
+      <p>${content.text}</p>
 
-    container.innerHTML = `
-      <div class="slide show">
-        <h1>${content.title}</h1>
-        <p>${content.text}</p>
-
-        <div class="image-wrapper">
-          <img src="${content.img}">
-        </div>
-
-        <div class="nav-buttons">
-          ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
-          ${currentPage < pages.length - 1 ? `<button onclick="nextPage()">Next →</button>` : ""}
-        </div>
+      <div class="image-wrapper">
+        <img src="${content.img}">
       </div>
-    `;
 
-  }, 250);
+      <div class="nav-buttons">
+        ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
+        ${currentPage < pages.length - 1 ? `<button onclick="nextPage()">Next →</button>` : ""}
+      </div>
+  `;
+
+  // Direction setup
+  slide.style.transform = `translateX(${direction * 80}px)`;
+  slide.style.opacity = "0";
+
+  container.innerHTML = "";
+  container.appendChild(slide);
+
+  // Trigger animation next frame
+  requestAnimationFrame(() => {
+    slide.style.transition = "all 0.5s ease";
+    slide.style.transform = "translateX(0)";
+    slide.style.opacity = "1";
+  });
+}
+
+
+function nextPage() {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    renderPage(1);     // slide from right
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage(-1);    // slide from left
+  }
 }
 
 function nextPage() {
