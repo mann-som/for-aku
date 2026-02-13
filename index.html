@@ -43,12 +43,10 @@ button {
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
-button:hover {
-  transform: scale(1.1);
-}
+button:hover { transform: scale(1.1); }
 
 #yesBtn {
   background-color: #ff4d6d;
@@ -79,27 +77,26 @@ button:hover {
 
 .hidden { display: none; }
 
+/* Fade screen transitions */
 .fade {
   opacity: 0;
   transition: opacity 0.6s ease;
 }
-
 .fade.show { opacity: 1; }
 
-/* Slide animation */
+/* Slide animation (direction aware) */
 .slide {
   opacity: 0;
-  transform: translateX(40px);
-  transition: all 0.5s ease;
+  transform: translateX(0);
+  transition: transform 0.5s ease, opacity 0.5s ease;
 }
+
+.slide.from-right { transform: translateX(60px); }
+.slide.from-left { transform: translateX(-60px); }
 
 .slide.show {
   opacity: 1;
   transform: translateX(0);
-}
-
-.slide.left {
-  transform: translateX(-40px);
 }
 
 .nav-buttons { margin-top: 20px; }
@@ -165,17 +162,21 @@ yesBtn.addEventListener("click", () => {
 
   explodeHearts();
 
-  const questionScreen = document.getElementById("questionScreen");
-  const journeyScreen = document.getElementById("journeyScreen");
+  const q = document.getElementById("questionScreen");
+  const j = document.getElementById("journeyScreen");
 
-  questionScreen.classList.remove("show");
+  q.classList.remove("show");
 
   setTimeout(() => {
-    questionScreen.classList.add("hidden");
-    journeyScreen.classList.remove("hidden");
-    setTimeout(() => journeyScreen.classList.add("show"), 50);
-    renderPage();
-  }, 900);
+    q.classList.add("hidden");
+    j.classList.remove("hidden");
+
+    requestAnimationFrame(()=>{
+      j.classList.add("show");
+      renderPage();
+    });
+
+  }, 700);
 });
 
 
@@ -205,16 +206,13 @@ const pages = [
 
 let currentPage = 0;
 
-function renderPage(direction = 1) {
-
+function renderPage(direction="right") {
   const content = pages[currentPage];
+  const entry = direction === "right" ? "from-right" : "from-left";
   const container = document.getElementById("pageContent");
 
-  // Create new slide
-  const slide = document.createElement("div");
-  slide.className = "slide";
-
-  slide.innerHTML = `
+  container.innerHTML = `
+    <div id="slide" class="slide ${entry}">
       <h1>${content.title}</h1>
       <p>${content.text}</p>
 
@@ -224,86 +222,61 @@ function renderPage(direction = 1) {
 
       <div class="nav-buttons">
         ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
-        ${currentPage < pages.length - 1 ? `<button onclick="nextPage()">Next →</button>` : ""}
+        ${currentPage < pages.length-1 ? `<button onclick="nextPage()">Next →</button>` : ""}
       </div>
+    </div>
   `;
 
-  // Direction setup
-  slide.style.transform = `translateX(${direction * 80}px)`;
-  slide.style.opacity = "0";
-
-  container.innerHTML = "";
-  container.appendChild(slide);
-
-  // Trigger animation next frame
-  requestAnimationFrame(() => {
-    slide.style.transition = "all 0.5s ease";
-    slide.style.transform = "translateX(0)";
-    slide.style.opacity = "1";
+  requestAnimationFrame(()=>{
+    document.getElementById("slide").classList.add("show");
   });
 }
 
-
 function nextPage() {
-  if (currentPage < pages.length - 1) {
-    currentPage++;
-    renderPage(1);     // slide from right
-  }
-}
-
-function prevPage() {
-  if (currentPage > 0) {
-    currentPage--;
-    renderPage(-1);    // slide from left
-  }
-}
-
-function nextPage() {
-  if (currentPage < pages.length - 1) {
+  if(currentPage < pages.length-1){
     currentPage++;
     renderPage("right");
   }
 }
 
 function prevPage() {
-  if (currentPage > 0) {
+  if(currentPage > 0){
     currentPage--;
     renderPage("left");
   }
 }
 
 
-/* Floating hearts background */
-setInterval(() => createHeart(), 800);
+/* Floating hearts */
+setInterval(createHeart, 800);
 
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = (Math.random() * 10 + 10) + "px";
-  heart.style.animationDuration = (Math.random() * 4 + 4) + "s";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 8000);
+function createHeart(){
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(Math.random()*10+10)+"px";
+  h.style.animationDuration=(Math.random()*4+4)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),8000);
 }
 
 
 /* Explosion hearts */
-function explodeHearts() {
-  for (let i = 0; i < 60; i++) {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = "50vw";
-    heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-    heart.style.animationDuration = (Math.random() * 2 + 2) + "s";
-    heart.style.transform = `translate(${Math.random()*400-200}px, ${Math.random()*-400}px)`;
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 4000);
+function explodeHearts(){
+  for(let i=0;i<60;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left="50vw";
+    h.style.fontSize=(Math.random()*20+20)+"px";
+    h.style.animationDuration=(Math.random()*2+2)+"s";
+    h.style.transform=`translate(${Math.random()*400-200}px,${Math.random()*-400}px)`;
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
   }
 }
 
 </script>
-
 </body>
 </html>
