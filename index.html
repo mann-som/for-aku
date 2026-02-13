@@ -6,127 +6,131 @@
 <title>For You ❤️</title>
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffdde1, #ee9ca7);
-    background-size: 400% 400%;
-    animation: gradientMove 12s ease infinite;
-  }
 
-  @keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #ffdde1, #ee9ca7);
+  background-size: 400% 400%;
+  animation: gradientMove 12s ease infinite;
+}
 
-  .container {
-    position: relative;
-    width: 92vw;
-    max-width: 420px;
-  }
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
-  h1 {
-    font-size: 26px;
-  }
+.container {
+  position: relative;
+  width: 92vw;
+  max-width: 420px;
+}
 
-  p {
-    font-size: 18px;
-  }
+h1 { font-size: 26px; }
+p { font-size: 18px; }
 
-  button {
-    padding: 12px 24px;
-    font-size: 18px;
-    margin: 10px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+button {
+  padding: 12px 24px;
+  font-size: 18px;
+  margin: 10px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-  button:hover {
-    transform: scale(1.1);
-  }
+button:hover {
+  transform: scale(1.1);
+}
 
-  #yesBtn {
-    background-color: #ff4d6d;
-    color: white;
-  }
+#yesBtn {
+  background-color: #ff4d6d;
+  color: white;
+}
 
-  #noBtn {
-    background-color: #333;
-    color: white;
-    position: absolute;
-  }
+#noBtn {
+  background-color: #333;
+  color: white;
+  position: absolute;
+}
 
-  /* Image Styling */
-  .image-wrapper {
-    width: 100%;
-    height: 420px;
-    overflow: hidden;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    margin-top: 20px;
-  }
+/* Image Card */
+.image-wrapper {
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  margin-top: 20px;
+}
 
-  .image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  .hidden {
-    display: none;
-  }
+.hidden { display: none; }
 
-  .fade {
+.fade {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.fade.show { opacity: 1; }
+
+/* Slide animation */
+.slide {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.5s ease;
+}
+
+.slide.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide.left {
+  transform: translateX(-40px);
+}
+
+.nav-buttons { margin-top: 20px; }
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 16px;
+  opacity: 0.6;
+  animation: floatUp linear forwards;
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-110vh);
     opacity: 0;
-    transition: opacity 0.6s ease;
   }
-
-  .fade.show {
-    opacity: 1;
-  }
-
-  .nav-buttons {
-    margin-top: 20px;
-  }
-
-  /* Floating hearts */
-  .heart {
-    position: fixed;
-    bottom: -20px;
-    font-size: 16px;
-    opacity: 0.6;
-    animation: floatUp linear forwards;
-  }
-
-  @keyframes floatUp {
-    to {
-      transform: translateY(-110vh);
-      opacity: 0;
-    }
-  }
+}
 
 </style>
 </head>
 
 <body>
 
-<!-- QUESTION SCREEN -->
 <div id="questionScreen" class="container fade show">
   <h1 id="questionText">Will you be my Valentine? ❤️</h1>
   <button id="yesBtn">Yes mwahh</button>
   <button id="noBtn">No :(</button>
 </div>
 
-<!-- JOURNEY SCREEN -->
 <div id="journeyScreen" class="container hidden fade">
   <div id="pageContent"></div>
 </div>
@@ -148,10 +152,8 @@ const texts = [
 ];
 
 noBtn.addEventListener("click", () => {
-
   yesScale += 0.2;
   yesBtn.style.transform = `scale(${yesScale})`;
-
   questionText.textContent = texts[Math.floor(Math.random() * texts.length)];
 
   const x = Math.random() * 250 - 125;
@@ -161,7 +163,7 @@ noBtn.addEventListener("click", () => {
 
 yesBtn.addEventListener("click", () => {
 
-  explodeHearts();   // BIG heart transition
+  explodeHearts();
 
   const questionScreen = document.getElementById("questionScreen");
   const journeyScreen = document.getElementById("journeyScreen");
@@ -177,7 +179,7 @@ yesBtn.addEventListener("click", () => {
 });
 
 
-// Memory Pages
+/* Memories */
 const pages = [
   {
     title: "Our First Date AND YES A DATE! 🥰",
@@ -194,7 +196,6 @@ const pages = [
     text: "I Love every second with you.",
     img: "photo3.jpeg"
   },
-  // More memories. More love. More us
   {
     title: "I LOVE YOU JAAN ❤️",
     text: "More memories. More love. More us.",
@@ -204,47 +205,52 @@ const pages = [
 
 let currentPage = 0;
 
-function renderPage() {
+function renderPage(direction = "right") {
   const content = pages[currentPage];
   const container = document.getElementById("pageContent");
 
+  const exitClass = direction === "right" ? "left" : "";
   container.classList.remove("show");
+  container.classList.add(exitClass);
 
   setTimeout(() => {
+
     container.innerHTML = `
-      <h1>${content.title}</h1>
-      <p>${content.text}</p>
-      <div class="image-wrapper">
-        <img src="${content.img}">
-      </div>
-      <div class="nav-buttons">
-        ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
-        ${currentPage < pages.length - 1 ? `<button onclick="nextPage()">Next →</button>` : ""}
+      <div class="slide show">
+        <h1>${content.title}</h1>
+        <p>${content.text}</p>
+
+        <div class="image-wrapper">
+          <img src="${content.img}">
+        </div>
+
+        <div class="nav-buttons">
+          ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
+          ${currentPage < pages.length - 1 ? `<button onclick="nextPage()">Next →</button>` : ""}
+        </div>
       </div>
     `;
-    container.classList.add("show");
-  }, 300);
+
+  }, 250);
 }
 
 function nextPage() {
   if (currentPage < pages.length - 1) {
     currentPage++;
-    renderPage();
+    renderPage("right");
   }
 }
 
 function prevPage() {
   if (currentPage > 0) {
     currentPage--;
-    renderPage();
+    renderPage("left");
   }
 }
 
 
-/* Subtle Floating Hearts Background */
-setInterval(() => {
-  createHeart();
-}, 800);
+/* Floating hearts background */
+setInterval(() => createHeart(), 800);
 
 function createHeart() {
   const heart = document.createElement("div");
@@ -254,12 +260,11 @@ function createHeart() {
   heart.style.fontSize = (Math.random() * 10 + 10) + "px";
   heart.style.animationDuration = (Math.random() * 4 + 4) + "s";
   document.body.appendChild(heart);
-
   setTimeout(() => heart.remove(), 8000);
 }
 
 
-/* Explosion Hearts Transition */
+/* Explosion hearts */
 function explodeHearts() {
   for (let i = 0; i < 60; i++) {
     const heart = document.createElement("div");
@@ -270,7 +275,6 @@ function explodeHearts() {
     heart.style.animationDuration = (Math.random() * 2 + 2) + "s";
     heart.style.transform = `translate(${Math.random()*400-200}px, ${Math.random()*-400}px)`;
     document.body.appendChild(heart);
-
     setTimeout(() => heart.remove(), 4000);
   }
 }
