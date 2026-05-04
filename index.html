@@ -6,7 +6,6 @@
 <title>For You ❤️</title>
 
 <style>
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -31,6 +30,7 @@ body {
   position: relative;
   width: 92vw;
   max-width: 420px;
+  z-index: 2;
 }
 
 h1 { font-size: 26px; }
@@ -48,18 +48,9 @@ button {
 
 button:hover { transform: scale(1.1); }
 
-#yesBtn {
-  background-color: #ff4d6d;
-  color: white;
-}
+#yesBtn { background-color: #ff4d6d; color: white; }
+#noBtn { background-color: #333; color: white; position: absolute; }
 
-#noBtn {
-  background-color: #333;
-  color: white;
-  position: absolute;
-}
-
-/* Image Card */
 .image-wrapper {
   width: 100%;
   height: 420px;
@@ -77,14 +68,9 @@ button:hover { transform: scale(1.1); }
 
 .hidden { display: none; }
 
-/* Fade screen transitions */
-.fade {
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
+.fade { opacity: 0; transition: opacity 0.6s ease; }
 .fade.show { opacity: 1; }
 
-/* Slide animation (direction aware) */
 .slide {
   opacity: 0;
   transform: translateX(0);
@@ -117,23 +103,86 @@ button:hover { transform: scale(1.1); }
   }
 }
 
+/* ===== Background memory animation ===== */
+#bgMemories {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-img {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.3);
+  opacity: 0;
+
+  animation: popOut 1.5s ease forwards;
+}
+
+.img1 { animation-delay: 0.2s; --x: 10vw; --y: 10vh; }
+.img2 { animation-delay: 0.4s; --x: 75vw; --y: 10vh; }
+.img3 { animation-delay: 0.6s; --x: 10vw; --y: 70vh; }
+.img4 { animation-delay: 0.8s; --x: 75vw; --y: 70vh; }
+
+@keyframes popOut {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  60% { transform: translate(-50%, -50%) scale(0.9); }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(1);
+    opacity: 0.9;
+  }
+}
+
+/* Floating sad emojis */
+.floating-emoji {
+  position: fixed;
+  bottom: -20px;
+  font-size: 20px;
+  opacity: 0.7;
+  animation: floatEmoji linear forwards;
+}
+
+@keyframes floatEmoji {
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
+}
 </style>
 </head>
 
 <body>
 
+<!-- Background Photos -->
+<div id="bgMemories">
+  <img src="photo5.jpeg" class="bg-img img1">
+  <img src="photo6.jpeg" class="bg-img img2">
+  <img src="photo7.jpeg" class="bg-img img3">
+  <img src="photo8.jpeg" class="bg-img img4">
+</div>
+
+<!-- Question -->
 <div id="questionScreen" class="container fade show">
   <h1 id="questionText">Will you be my Valentine? AGAIN! ❤️</h1>
   <button id="yesBtn">Yes mwahh</button>
   <button id="noBtn">No :(</button>
 </div>
 
+<!-- Journey -->
 <div id="journeyScreen" class="container hidden fade">
   <div id="pageContent"></div>
 </div>
 
 <script>
-
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const questionText = document.getElementById("questionText");
@@ -159,7 +208,6 @@ noBtn.addEventListener("click", () => {
 });
 
 yesBtn.addEventListener("click", () => {
-
   explodeHearts();
 
   const q = document.getElementById("questionScreen");
@@ -179,29 +227,12 @@ yesBtn.addEventListener("click", () => {
   }, 700);
 });
 
-
-/* Memories */
+/* Pages */
 const pages = [
-  {
-    title: "Our First Date AND YES A DATE! 🥰",
-    text: "That day when i fell in love with you and our auto rides.",
-    img: "photo1.jpeg"
-  },
-  {
-    title: "All Our craziness 💕",
-    text: "Sneaking into my PG and sneaking into your home and nasty in your parent's bathroom LMAO CRAZYYYYY!!!! MWAH.",
-    img: "photo2.jpeg"
-  },
-  {
-    title: "This Is Just The Beginning ❤️",
-    text: "I Love every second with you.",
-    img: "photo3.jpeg"
-  },
-  {
-    title: "I LOVE YOU JAAN ❤️",
-    text: "More memories. More love. More us.",
-    img: "photo4.jpeg"
-  }
+  { title:"Our First Date 🥰", text:"That day when i fell in love with you.", img:"photo1.jpeg"},
+  { title:"All Our craziness 💕", text:"Crazy memories 😂", img:"photo2.jpeg"},
+  { title:"Beginning ❤️", text:"I love every second.", img:"photo3.jpeg"},
+  { title:"I LOVE YOU ❤️", text:"More us.", img:"photo4.jpeg"}
 ];
 
 let currentPage = 0;
@@ -215,11 +246,9 @@ function renderPage(direction="right") {
     <div id="slide" class="slide ${entry}">
       <h1>${content.title}</h1>
       <p>${content.text}</p>
-
       <div class="image-wrapper">
         <img src="${content.img}">
       </div>
-
       <div class="nav-buttons">
         ${currentPage > 0 ? `<button onclick="prevPage()">← Previous</button>` : ""}
         ${currentPage < pages.length-1 ? `<button onclick="nextPage()">Next →</button>` : ""}
@@ -232,24 +261,11 @@ function renderPage(direction="right") {
   });
 }
 
-function nextPage() {
-  if(currentPage < pages.length-1){
-    currentPage++;
-    renderPage("right");
-  }
-}
-
-function prevPage() {
-  if(currentPage > 0){
-    currentPage--;
-    renderPage("left");
-  }
-}
-
+function nextPage(){ if(currentPage<pages.length-1){ currentPage++; renderPage("right"); }}
+function prevPage(){ if(currentPage>0){ currentPage--; renderPage("left"); }}
 
 /* Floating hearts */
-setInterval(createHeart, 800);
-
+setInterval(()=>createHeart(),800);
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart";
@@ -260,7 +276,6 @@ function createHeart(){
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),8000);
 }
-
 
 /* Explosion hearts */
 function explodeHearts(){
@@ -277,6 +292,21 @@ function explodeHearts(){
   }
 }
 
+/* Floating sad emojis */
+setInterval(()=>createFunnyEmoji(),1200);
+
+function createFunnyEmoji(){
+  const e=document.createElement("div");
+  e.className="floating-emoji";
+  const emojis=["😢","🥺","🙏"];
+  e.innerHTML=emojis[Math.floor(Math.random()*emojis.length)];
+  e.style.left=Math.random()*100+"vw";
+  e.style.fontSize=(Math.random()*10+16)+"px";
+  e.style.animationDuration=(Math.random()*4+4)+"s";
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),8000);
+}
 </script>
+
 </body>
 </html>
