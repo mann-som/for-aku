@@ -113,32 +113,63 @@ button:hover { transform: scale(1.1); }
 
 .bg-img {
   position: absolute;
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
 
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.3);
+  transform: translate(-50%, -50%) scale(0);
   opacity: 0;
 
-  animation: popOut 1.5s ease forwards;
+  animation: shaadiEntry 2s ease forwards;
 }
 
-.img1 { animation-delay: 0.2s; --x: 10vw; --y: 10vh; }
-.img2 { animation-delay: 0.4s; --x: 75vw; --y: 10vh; }
-.img3 { animation-delay: 0.6s; --x: 10vw; --y: 70vh; }
-.img4 { animation-delay: 0.8s; --x: 75vw; --y: 70vh; }
+/* delays */
+.img1 { animation-delay: 0.2s; }
+.img2 { animation-delay: 0.4s; }
+.img3 { animation-delay: 0.6s; }
+.img4 { animation-delay: 0.8s; }
 
-@keyframes popOut {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-  40% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-  60% { transform: translate(-50%, -50%) scale(0.9); }
+/* final corner positions */
+.img1 { --x: -40vw; --y: -35vh; }
+.img2 { --x: 35vw; --y: -35vh; }
+.img3 { --x: -40vw; --y: 30vh; }
+.img4 { --x: 35vw; --y: 30vh; }
+
+/* DRAMATIC ENTRY */
+@keyframes shaadiEntry {
+
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.4) rotate(180deg);
+  }
+
+  45% {
+    transform: translate(-50%, -50%) scale(0.8) rotate(260deg);
+  }
+
+  65% {
+    transform: translate(calc(-50% + var(--x)*1.2), calc(-50% + var(--y)*1.2))
+               scale(1.1) rotate(320deg);
+  }
+
+  80% {
+    transform: translate(calc(-50% + var(--x)*0.9), calc(-50% + var(--y)*0.9))
+               scale(0.95) rotate(350deg);
+  }
+
   100% {
-    transform: translate(var(--x), var(--y)) scale(1);
-    opacity: 0.9;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)))
+               scale(1) rotate(360deg);
+    opacity: 1;
   }
 }
 
@@ -146,14 +177,22 @@ button:hover { transform: scale(1.1); }
 .floating-emoji {
   position: fixed;
   bottom: -20px;
-  font-size: 20px;
-  opacity: 0.7;
+  font-size: 28px;        /* bigger */
+  opacity: 0.95;   
   animation: floatEmoji linear forwards;
 }
 
 @keyframes floatEmoji {
-  to {
-    transform: translateY(-110vh);
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    transform: translateY(-120vh) scale(1);
     opacity: 0;
   }
 }
@@ -293,7 +332,7 @@ function explodeHearts(){
 }
 
 /* Floating sad emojis */
-setInterval(()=>createFunnyEmoji(),1200);
+setInterval(()=>createFunnyEmoji(),500);
 
 function createFunnyEmoji(){
   const e=document.createElement("div");
