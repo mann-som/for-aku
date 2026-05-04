@@ -177,8 +177,8 @@ button:hover { transform: scale(1.1); }
 .floating-emoji {
   position: fixed;
   bottom: -20px;
-  font-size: 28px;        /* bigger */
-  opacity: 0.95;   
+  font-size: 35px;        /* bigger */
+  opacity: 1;   
   animation: floatEmoji linear forwards;
 }
 
@@ -332,7 +332,7 @@ function explodeHearts(){
 }
 
 /* Floating sad emojis */
-setInterval(()=>createFunnyEmoji(),500);
+setInterval(()=>createFunnyEmoji(),100);
 
 function createFunnyEmoji(){
   const e=document.createElement("div");
